@@ -1,0 +1,62 @@
+GET http://localhost:8080/api/employees
+
+###
+
+POST http://localhost:8080/api/employees/register
+Content-Type: application/json
+
+{
+  "password": "pass1",
+  "email":"user1@mail.ru",
+  "grade": "programmer",
+  "name":"user1",
+  "surname":"surname1"
+}
+
+###
+
+PUT http://localhost:8080/api/employees
+Content-Type: application/json
+
+{
+  "id": 1,
+  "name": "soltan",
+  "surname": "sunnetbayev",
+  "password": "pass2",
+  "grade": "programmer"
+}
+
+###
+
+DELETE http://localhost:8080/api/employees/1/id
+
+###
+
+GET http://localhost:8080/api/product
+
+###
+
+POST http://localhost:8080/api/product/addProduct
+Content-Type: application/json
+
+{
+  "name": "fanta",
+  "amount": 12,
+  "takenPrice": 12.6,
+  "sellPrice": 12.5,
+  "code": "234234"
+}
+
+###
+
+PUT http://localhost:8080/api/product
+Content-Type: application/json
+
+{
+  "id": 1,
+  "name": "cola",
+  "amount": 12,
+  "takenPrice": 12.6,
+  "sellPrice": 12.5,
+  "code": "sdfdsf"
+}
