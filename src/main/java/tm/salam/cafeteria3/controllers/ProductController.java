@@ -27,13 +27,12 @@ public class ProductController {
 
 
     @PostMapping(path = "/addOrEditProduct",consumes = "application/json",produces = "application/json")
-    public ProductDTO getProductByCode(@ModelAttribute String code){
+    public ProductDTO getProductByCode(@RequestBody ProductDTO productDTO){
 
         Product product=null;
-        System.out.println("code  product  "+code);
-        if(productService.findProductByCode(code)){
+        if(productService.findProductByCode(productDTO.getCode())){
 
-            product=productService.getProductByCode(code);
+            product=productService.getProductByCode(productDTO.getCode());
 
             return ProductDTO.builder()
                     .imagePath(product.getImagePath())
@@ -49,7 +48,7 @@ public class ProductController {
                         .build();
         }
     }
-    @PutMapping(path = "/updateProduct",consumes = "application/json",produces = "application/json")
+    @PutMapping(path = "/addOrEditProduct",consumes = "application/json",produces = "application/json")
     public List<ProductDTO>UpdateProduct(@RequestBody ProductDTO productDTO){
 
         productService.AddOrEditProduct(productDTO);
