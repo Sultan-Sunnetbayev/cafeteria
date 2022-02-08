@@ -3,17 +3,16 @@ package tm.salam.cafeteria3.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import tm.salam.cafeteria3.dto.ProductDTO;
+import tm.salam.cafeteria3.dto.ProductDTO.ProductDTOBuilder;
 import tm.salam.cafeteria3.models.Product;
 import tm.salam.cafeteria3.service.ProductService;
-
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/product")
+@RequestMapping("/api/products")
 public class ProductController {
 
     private ProductService productService;
-
 
     @Autowired
     public ProductController(ProductService productService) {
@@ -26,16 +25,32 @@ public class ProductController {
         return productService.getAllProducts();
     }
 
-    @PostMapping(path = "/addProduct",consumes = "application/json",produces = "application/json")
-    public List<ProductDTO>AddNewProduct(@RequestBody ProductDTO productDTO){
 
-        productService.AddOrEditProduct(productDTO);
+    @PostMapping(path = "/addOrEditProduct",consumes = "application/json",produces = "application/json")
+    public ProductDTO getProductByCode(@ModelAttribute String code){
 
-        return productService.getAllProducts();
+        Product product=null;
+        System.out.println("code  product  "+code);
+        if(productService.findProductByCode(code)){
+
+            product=productService.getProductByCode(code);
+
+            return ProductDTO.builder()
+                    .imagePath(product.getImagePath())
+                    .name(product.getName())
+                    .amount(product.getAmount())
+                    .takenPrice(product.getTakenPrice())
+                    .sellPrice(product.getSellPrice())
+                    .code(product.getCode())
+                    .build();
+        }else{
+                return ProductDTO.builder()
+                        .code(product.getCode())
+                        .build();
+        }
     }
-
-    @PutMapping(consumes = "application/json",produces = "application/json")
-    public List<ProductDTO>EditProduct(@RequestBody ProductDTO productDTO){
+    @PutMapping(path = "/updateProduct",consumes = "application/json",produces = "application/json")
+    public List<ProductDTO>UpdateProduct(@RequestBody ProductDTO productDTO){
 
         productService.AddOrEditProduct(productDTO);
 

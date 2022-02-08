@@ -9,5 +9,6 @@ public interface ProductService {
 
     List<ProductDTO>getAllProducts();
     void AddOrEditProduct(ProductDTO productDTO);
-//    void EditProduct(ProductDTO productDTO);
+    Product getProductByCode(String code);
+    boolean findProductByCode(String code);
 }

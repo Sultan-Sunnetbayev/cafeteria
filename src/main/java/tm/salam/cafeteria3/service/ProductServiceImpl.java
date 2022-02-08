@@ -1,6 +1,5 @@
 package tm.salam.cafeteria3.service;
 
-import lombok.Builder.ObtainVia;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tm.salam.cafeteria3.dao.ProductRepository;
@@ -43,7 +42,19 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void AddOrEditProduct(ProductDTO productDTO){
 
-        Product product=Product.builder()
+        Product product=productRepository.getProductByCode(productDTO.getCode());
+
+        if(product != null){
+
+            product.setImagePath(productDTO.getImagePath());
+            product.setName(productDTO.getName());
+            product.setTakenPrice(productDTO.getTakenPrice());
+            product.setSellPrice(productDTO.getSellPrice());
+            product.setAmount(productDTO.getAmount());
+            product.setCode(productDTO.getCode());
+
+        }else {
+            product=Product.builder()
                 .imagePath(productDTO.getImagePath())
                 .name(productDTO.getName())
                 .amount(productDTO.getAmount())
@@ -51,28 +62,26 @@ public class ProductServiceImpl implements ProductService {
                 .sellPrice(productDTO.getSellPrice())
                 .code(productDTO.getCode())
                 .build();
-
+        }
         productRepository.save(product);
     }
 
-//    @Override
-//    public void EditProduct(ProductDTO productDTO) {
-//
-//        Product product=productRepository.findById(productDTO.getId());
-//
-//        if(product==null){
-//
-//            throw new RuntimeException("Product not found by name "+productDTO.getName());
-//        }
-//
-//        product.setName(productDTO.getName());
-//        product.setImagePath(productDTO.getImagePath());
-//        product.setAmount(productDTO.getAmount());
-//        product.setTakenPrice(productDTO.getTakenPrice());
-//        product.setSellPrice(product.getSellPrice());
-//        product.setCode(productDTO.getCode());
-//
-//        productRepository.save(product);
-//
-//    }
+    @Override
+    public boolean findProductByCode(String code) {
+
+        Product product=productRepository.getProductByCode(code);
+
+        if(product==null){
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
+
+    @Override
+    public Product getProductByCode(String code) {
+
+        return productRepository.getProductByCode(code);
+    }
 }

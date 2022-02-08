@@ -32,31 +32,27 @@ DELETE http://localhost:8080/api/employees/1/id
 
 ###
 
-GET http://localhost:8080/api/product
+GET http://localhost:8080/api/products
 
 ###
 
-POST http://localhost:8080/api/product/addProduct
+POST http://localhost:8080/api/products/addOrEditProduct
 Content-Type: application/json
 
 {
-  "name": "fanta",
-  "amount": 12,
-  "takenPrice": 12.6,
-  "sellPrice": 12.5,
-  "code": "234234"
+  
 }
 
 ###
 
-PUT http://localhost:8080/api/product
+PUT http://localhost:8080/api/products/updateProduct
 Content-Type: application/json
 
 {
-  "id": 1,
+  "id": 5,
   "name": "cola",
-  "amount": 12,
-  "takenPrice": 12.6,
-  "sellPrice": 12.5,
-  "code": "sdfdsf"
+  "amount": 16,
+  "takenPrice": 343,
+  "sellPrice": 234,
+  "code": "qwerty"
 }
