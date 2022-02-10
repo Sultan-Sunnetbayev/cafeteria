@@ -26,7 +26,6 @@ public class ProductServiceImpl implements ProductService {
                 .map((this::toDTO))
                 .collect(Collectors.toList());
     }
-
     private ProductDTO toDTO(Product product) {
 
         return ProductDTO.builder()
@@ -40,7 +39,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void AddOrEditProduct(ProductDTO productDTO){
+    public boolean AddOrEditProduct(ProductDTO productDTO){
 
         Product product=productRepository.getProductByCode(productDTO.getCode());
 
@@ -64,6 +63,8 @@ public class ProductServiceImpl implements ProductService {
                 .build();
         }
         productRepository.save(product);
+
+        return true;
     }
 
     @Override
@@ -80,8 +81,29 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product getProductByCode(String code) {
+    public ProductDTO getProductByCode(String code) {
 
-        return productRepository.getProductByCode(code);
+        Product product=productRepository.getProductByCode(code);
+
+        return ProductDTO.builder()
+                .imagePath(product.getImagePath())
+                .name(product.getName())
+                .amount(product.getAmount())
+                .takenPrice(product.getTakenPrice())
+                .sellPrice(product.getSellPrice())
+                .code(product.getCode())
+                .build();
+    }
+
+    @Override
+    public boolean RemoveProduct(String code) {
+
+        if(this.findProductByCode(code)){
+            productRepository.deleteByCode(code);
+
+            return true;
+        }else{
+            return false;
+        }
     }
 }

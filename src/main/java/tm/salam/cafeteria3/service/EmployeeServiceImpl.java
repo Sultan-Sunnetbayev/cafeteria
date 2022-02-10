@@ -50,30 +50,37 @@ public class EmployeeServiceImpl implements EmployeeService{
     }
 
     @Override
-    public void CreateNewEmployee(EmployeeDTO employeeDTO) {
+    @Transactional
+    public boolean CreateNewEmployee(EmployeeDTO employeeDTO) {
 
+        Employee helper1=employeeRepository.findFirstByName(employeeDTO.getName());
+        Employee helper2=employeeRepository.findFirstBySurname(employeeDTO.getSurname());
+        if(helper1!=null && helper2!=null){
+            return false;
+        }
         Employee employee = Employee.builder()
                 .name(employeeDTO.getName())
                 .surname(employeeDTO.getSurname())
                 .password(passwordEncoder.encode(employeeDTO.getPassword()))
-                .email(employeeDTO.getEmail())
                 .grade(employeeDTO.getGrade())
+                .imagePath(employeeDTO.getImagePath())
                 .role(Role.CLIENT)
                 .build();
 
         employeeRepository.save(employee);
 
+        return true;
     }
 
     @Override
     @Transactional
-    public void UpdateEmployeeProfile(EmployeeDTO employeeDTO) {
+    public boolean UpdateEmployeeProfile(EmployeeDTO employeeDTO) {
 
 
             Employee savedEmployee=employeeRepository.findById(employeeDTO.getId());
 
             if(savedEmployee==null){
-                throw new RuntimeException("User not found by name "+employeeDTO.getName());
+                return false;
             }
             savedEmployee.setName(employeeDTO.getName());
             savedEmployee.setPassword(passwordEncoder.encode(employeeDTO.getPassword()));
@@ -81,31 +88,34 @@ public class EmployeeServiceImpl implements EmployeeService{
             savedEmployee.setGrade(employeeDTO.getGrade());
             savedEmployee.setImagePath(employeeDTO.getImagePath());
             employeeRepository.save(savedEmployee);
+
+            return true;
         }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public boolean RemoveEmployee(int id) {
 
-        Employee employee = employeeRepository.findFirstByName(username);
-
-        if(employee == null){
-            throw new UsernameNotFoundException("Employeer not found with name: " + username);
+        Employee employee=employeeRepository.findById(id);
+        if(employee==null){
+            return false;
         }
-
-        List<GrantedAuthority> roles = new ArrayList<>();
-        roles.add(new SimpleGrantedAuthority(employee.getRole().name()));
-
-        return new org.springframework.security.core.userdetails.User(
-                employee.getName(),
-                employee.getPassword(),
-                roles);
-
-    }
-
-    @Override
-    public void RemoveEmployee(int id) {
-
         employeeRepository.deleteById(id);
+
+        return true;
     }
+
+    @Override
+    public EmployeeDTO getEmployeeById(int id) {
+
+        Employee employee=employeeRepository.findById(id);
+
+        return EmployeeDTO.builder()
+                .name(employee.getName())
+                .surname(employee.getSurname())
+                .grade(employee.getGrade())
+                .build();
+    }
+
+
 
 }

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import tm.salam.cafeteria3.dto.ProductDTO;
 import tm.salam.cafeteria3.models.Product;
+import tm.salam.cafeteria3.service.BucketService;
 import tm.salam.cafeteria3.service.ProductService;
 
 import java.util.List;
@@ -13,23 +14,18 @@ import java.util.List;
 public class SellProductController {
 
     private final ProductService productService;
-
+    private final BucketService bucketService;
     @Autowired
-    public SellProductController(ProductService productService) {
+    public SellProductController(ProductService productService, BucketService bucketService) {
         this.productService = productService;
+        this.bucketService = bucketService;
     }
 
-    @PostMapping(produces = "application/json")
-    public ProductDTO getProductByCode(@RequestBody ProductDTO productDTO){
+    @PostMapping(consumes = "application/json",produces = "application/json")
+    public List<ProductDTO> getProductByCode(@RequestBody ProductDTO productDTO){
 
-        Product product=productService.getProductByCode(productDTO.getCode());
+        bucketService.AddProducts(productDTO.getCode());
 
-        return ProductDTO.builder()
-                .imagePath(product.getImagePath())
-                .name(product.getName())
-                .sellPrice(product.getSellPrice())
-                .amount(product.getAmount())
-                .build();
-
+        return bucketService.getAllProduct();
     }
 }

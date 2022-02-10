@@ -18,8 +18,8 @@ public class ReturnProductDTO {
 
     private int id;
     private String productName;
-    private BigDecimal price;
-    private BigDecimal amount;
+    private Double  sellPrice;
+    private int amount;
     private LocalDateTime created;
     private Product product;
     private Employee employee;

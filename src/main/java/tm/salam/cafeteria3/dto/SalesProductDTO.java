@@ -20,8 +20,8 @@ public class SalesProductDTO {
 
     private int id;
     private String productName;
-    private BigDecimal price;
-    private BigDecimal amount;
+    private Double sellPrice;
+    private int amount;
     private String imagePath;
     private LocalDateTime created;
     private Product product;

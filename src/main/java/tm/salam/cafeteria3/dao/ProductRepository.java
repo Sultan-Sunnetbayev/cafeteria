@@ -10,7 +10,6 @@ import java.util.Optional;
 public interface ProductRepository extends JpaRepository<Product,Integer> {
 
     Product findById(int id);
-//     findProductByCode(String code);
-//    Product findByCode(String code);
     Product getProductByCode(String code);
+    void deleteByCode(String code);
 }

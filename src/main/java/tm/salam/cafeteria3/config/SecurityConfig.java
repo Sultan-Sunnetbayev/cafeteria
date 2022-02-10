@@ -3,6 +3,7 @@ package tm.salam.cafeteria3.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -12,9 +13,12 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import tm.salam.cafeteria3.Helper.JWTAuthorizationFilter;
 import tm.salam.cafeteria3.models.Role;
 import tm.salam.cafeteria3.service.EmployeeService;
+import tm.salam.cafeteria3.service.SellerService;
 
 import javax.persistence.Basic;
 
@@ -23,11 +27,11 @@ import javax.persistence.Basic;
 @EnableGlobalMethodSecurity(securedEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private EmployeeService employeeService;
+    private SellerService sellerService;
 
     @Autowired
-    public void setUserService(EmployeeService employeeService) {
-        this.employeeService = employeeService;
+    public void setSellerService(SellerService sellerService) {
+        this.sellerService = sellerService;
     }
 
     @Override
@@ -36,12 +40,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         auth.authenticationProvider(authenticationProvider());
     }
 
-    @Bean
+    @Basic
     public AuthenticationProvider authenticationProvider() {
 
         DaoAuthenticationProvider auth = new DaoAuthenticationProvider();
 
-        auth.setUserDetailsService(employeeService);
+        auth.setUserDetailsService(sellerService);
         auth.setPasswordEncoder(passwordEncoder());
 
         return auth;
@@ -58,8 +62,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
 //                .antMatchers("/api/employees").hasAnyAuthority(Role.ADMIN.name())
-//                .antMatchers("api/employees/register").hasAuthority(Role.ADMIN.name())
-//                .antMatchers("api/product/addProduct").hasAuthority(Role.ADMIN.name())
+//                .antMatchers("/api/employees/register").hasAuthority(Role.ADMIN.name())
+//                .antMatchers(HttpMethod.POST,"/api/products/addOrEditProduct").hasAnyAuthority(Role.ADMIN.name(),Role.SELLER.name())
                 .anyRequest().permitAll()
                 .and()
                 .formLogin()
@@ -72,6 +76,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutSuccessUrl("/").deleteCookies("JSESSIONID")
                 .invalidateHttpSession(true)
                 .and()
-                .csrf().disable();
+                .csrf().disable()
+                .addFilterAfter(new JWTAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class)
+                .authorizeRequests();
     }
 }

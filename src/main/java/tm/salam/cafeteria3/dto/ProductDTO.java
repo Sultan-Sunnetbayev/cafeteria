@@ -16,9 +16,9 @@ public class ProductDTO {
     private int id;
     private String name;
     private String code;
-    private BigDecimal amount;
+    private int amount;
     private String imagePath;
-    private BigDecimal takenPrice;
-    private BigDecimal sellPrice;
-
+    private Double takenPrice;
+    private Double sellPrice;
+    private Double sum;
 }

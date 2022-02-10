@@ -24,7 +24,6 @@ public class Employee {
     private String name;
     private String surname;
     private String password;
-    private String email;
     private String grade;
     @Column(name = "image_path")
     private String imagePath;
@@ -37,4 +36,7 @@ public class Employee {
     private SalesProduct salesProduct;
     @OneToOne(optional =true, mappedBy = "employee")
     private ReturnProduct returnProduct;
+    @OneToOne(optional = true,mappedBy = "employee")
+    private Bucket bucket;
+
 }

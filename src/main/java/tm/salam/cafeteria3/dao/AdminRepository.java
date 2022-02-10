@@ -6,4 +6,7 @@ import tm.salam.cafeteria3.models.Admin;
 
 @Repository
 public interface AdminRepository extends JpaRepository<Admin,Integer> {
+
+    Admin findFirstByUsername(String username);
+    Admin findById(int id);
 }

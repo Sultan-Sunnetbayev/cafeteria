@@ -23,13 +23,13 @@ public class Product {
     private int id;
     private String name;
     private String code;
-    private BigDecimal amount;
+    private int amount;
     @Column(name = "image_path")
     private String imagePath;
     @Column(name = "taken_price")
-    private BigDecimal takenPrice;
+    private Double takenPrice;
     @Column(name = "sell_price")
-    private BigDecimal sellPrice;
+    private Double sellPrice;
     @CreationTimestamp
     private LocalDateTime created;
     @OneToOne(optional = true,mappedBy = "product")
@@ -38,5 +38,6 @@ public class Product {
     private ReturnProduct returnProduct;
     @OneToOne(optional = true,mappedBy = "product")
     private SpoiledProduct spoiledProduct;
-
+    @OneToOne(optional = true,mappedBy = "product")
+    private Bucket bucket;
 }

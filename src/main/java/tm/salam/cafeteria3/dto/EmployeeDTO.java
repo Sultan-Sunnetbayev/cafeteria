@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
+import java.io.File;
 
 @Data
 @NoArgsConstructor
@@ -17,8 +18,6 @@ public class EmployeeDTO {
     private String name;
     private String surname;
     private String password;
-    private String email;
     private String grade;
     private String imagePath;
-
 }

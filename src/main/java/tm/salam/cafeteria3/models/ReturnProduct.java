@@ -23,8 +23,9 @@ public class ReturnProduct {
     private int id;
     @Column(name = "product_name")
     private String productName;
-    private BigDecimal price;
-    private BigDecimal amount;
+    @Column(name = "price")
+    private Double sellPrice;
+    private int amount;
     @CreationTimestamp
     private LocalDateTime created;
     @OneToOne(optional = true,cascade = CascadeType.ALL)

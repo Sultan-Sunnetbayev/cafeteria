@@ -8,7 +8,8 @@ import java.util.List;
 public interface ProductService {
 
     List<ProductDTO>getAllProducts();
-    void AddOrEditProduct(ProductDTO productDTO);
-    Product getProductByCode(String code);
+    boolean AddOrEditProduct(ProductDTO productDTO);
+    ProductDTO getProductByCode(String code);
     boolean findProductByCode(String code);
+    boolean RemoveProduct(String code);
 }

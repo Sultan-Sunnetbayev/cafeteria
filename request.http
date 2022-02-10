@@ -3,15 +3,11 @@ GET http://localhost:8080/api/employees
 ###
 
 POST http://localhost:8080/api/employees/register
-Content-Type: application/json
+Content-Type: multipart/form-data
 
 {
-  "password": "pass1",
-  "email":"user1@mail.ru",
   "grade": "programmer",
-  "name":"user1",
-  "surname":"surname1"
-}
+  "n
 
 ###
 

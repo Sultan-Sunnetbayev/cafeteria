@@ -6,4 +6,6 @@ import tm.salam.cafeteria3.models.SpoiledProduct;
 
 @Repository
 public interface SpoiledProductRepository extends JpaRepository<SpoiledProduct,Integer> {
+
+    SpoiledProduct findByProduct_Id(int productId);
 }

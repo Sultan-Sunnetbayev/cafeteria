@@ -19,5 +19,6 @@ public class AdminDTO {
     private String password;
     private String email;
     private String imagePath;
+    private String token;
 
 }

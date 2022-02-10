@@ -23,8 +23,9 @@ public class SalesProduct {
     private int id;
     @Column(name = "product_name")
     private String productName;
-    private BigDecimal price;
-    private BigDecimal amount;
+    @Column(name = "price")
+    private Double sellPrice;
+    private int amount;
     @Column(name = "image_path")
     private String imagePath;
     @CreationTimestamp

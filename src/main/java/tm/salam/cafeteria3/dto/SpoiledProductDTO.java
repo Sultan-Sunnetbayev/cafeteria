@@ -17,8 +17,8 @@ public class SpoiledProductDTO {
 
     private int id;
     private String productName;
-    private BigDecimal price;
-    private BigDecimal amount;
+    private Double sellPrice;
+    private int amount;
     private LocalDateTime created;
     private Product product;
 }
