@@ -9,7 +9,7 @@ import tm.salam.cafeteria3.service.ProductService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/products")
+@RequestMapping("/api/v1/products")
 public class ProductController {
 
     private ProductService productService;

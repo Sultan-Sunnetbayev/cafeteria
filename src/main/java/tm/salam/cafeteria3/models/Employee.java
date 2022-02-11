@@ -28,8 +28,6 @@ public class Employee {
     @Column(name = "image_path")
     private String imagePath;
     private String code;
-    @Enumerated(EnumType.STRING)
-    private Role role;
     @CreationTimestamp
     LocalDateTime created;
     @OneToOne(optional = true,mappedBy = "employee")

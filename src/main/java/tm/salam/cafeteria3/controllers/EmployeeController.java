@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/employees")
+@RequestMapping("/api/v1/employees")
 public class EmployeeController {
 
     private final EmployeeService employeeService;
@@ -34,7 +34,7 @@ public class EmployeeController {
         return employeeService.getAllEmployee();
     }
 
-    @PostMapping(path = "/register",consumes ={ MediaType.MULTIPART_FORM_DATA_VALUE },produces = "application/json")
+    @PostMapping(path = "/addEmployee",consumes ={ MediaType.MULTIPART_FORM_DATA_VALUE },produces = "application/json")
     @ResponseBody
     public ResponseTransfer CreateNewEmployee(@ModelAttribute EmployeeDTO employeeDTO,
                                               @RequestParam("image")MultipartFile multipartFile) throws IOException {
@@ -42,7 +42,7 @@ public class EmployeeController {
         String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
         employeeDTO.setImagePath(fileName);
 
-        String uploadDir = "src/main/resources/employee_photos/"+employeeDTO.getId();
+        String uploadDir = "src/main/resources/employee_photos";
 
         if (employeeService.CreateNewEmployee(employeeDTO)){
             FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);

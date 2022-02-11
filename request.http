@@ -52,3 +52,9 @@ Content-Type: application/json
   "sellPrice": 234,
   "code": "qwerty"
 }
+
+###
+
+PUT http://localhost:8080/api/products/updateProduct
+Content-Type: multipart/form-data
+

@@ -1,22 +1,16 @@
 package tm.salam.cafeteria3.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tm.salam.cafeteria3.dao.EmployeeRepository;
+import tm.salam.cafeteria3.dao.RoleRepository;
 import tm.salam.cafeteria3.dto.EmployeeDTO;
 import tm.salam.cafeteria3.models.Employee;
 import tm.salam.cafeteria3.models.Role;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -64,7 +58,7 @@ public class EmployeeServiceImpl implements EmployeeService{
                 .password(passwordEncoder.encode(employeeDTO.getPassword()))
                 .grade(employeeDTO.getGrade())
                 .imagePath(employeeDTO.getImagePath())
-                .role(Role.CLIENT)
+                .code(employeeDTO.getCode())
                 .build();
 
         employeeRepository.save(employee);
@@ -87,6 +81,8 @@ public class EmployeeServiceImpl implements EmployeeService{
             savedEmployee.setSurname(employeeDTO.getSurname());
             savedEmployee.setGrade(employeeDTO.getGrade());
             savedEmployee.setImagePath(employeeDTO.getImagePath());
+            savedEmployee.setCode(employeeDTO.getCode());
+
             employeeRepository.save(savedEmployee);
 
             return true;
@@ -110,12 +106,11 @@ public class EmployeeServiceImpl implements EmployeeService{
         Employee employee=employeeRepository.findById(id);
 
         return EmployeeDTO.builder()
+                .imagePath(employee.getImagePath())
                 .name(employee.getName())
                 .surname(employee.getSurname())
                 .grade(employee.getGrade())
                 .build();
     }
-
-
 
 }

@@ -9,28 +9,16 @@ CREATE TABLE products(
     "created" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE admins (
+CREATE TABLE users (
     "id" SERIAL PRIMARY KEY NOT NULL,
     "username" CHARACTER VARYING(50) NOT NULL,
     "password" CHARACTER VARYING(80) NOT NULL,
     "email" CHARACTER VARYING(80) NOT NULL,
-    "role" CHARACTER VARYING(10) NOT NULL,
+    "status" CHARACTER VARYING(10) NOT NULL,
     "code" CHARACTER VARYING(50),
     "image_path" CHARACTER VARYING(150),
---     "token" CHARACTER  VARYING (255),
-    "created" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE sellers (
-    "id" SERIAL PRIMARY KEY NOT NULL,
-    "username" CHARACTER VARYING(50) NOT NULL,
-    "password" CHARACTER VARYING(80) NOT NULL,
-    "email" CHARACTER VARYING(80) NOT NULL,
-    "role" CHARACTER VARYING(10) NOT NULL,
-    "code" CHARACTER VARYING(50),
-    "image_path" CHARACTER VARYING(150),
---     "token" CHARACTER  VARYING (255),
-    "created" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
+    "created" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE employees (
@@ -41,7 +29,6 @@ CREATE TABLE employees (
     "grade" CHARACTER VARYING(10) NOT NULL,
     "image_path" CHARACTER VARYING(150),
     "code" CHARACTER VARYING(50),
-    "role" CHARACTER VARYING(10) NOT NULL,
     "created" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -110,5 +97,25 @@ CREATE TABLE bucket(
     CONSTRAINT bucket_employee_id_fk
         FOREIGN KEY ("employee_id")
             REFERENCES employees("id")
+                ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE TABLE roles(
+    "id" SERIAL PRIMARY KEY NOT NULL,
+    "name" CHARACTER VARYING(20) NOT NULL
+);
+
+CREATE TABLE roles_users(
+
+    "user_id" INT NOT NULL,
+    "role_id" INT NOT NULL,
+
+    CONSTRAINT "roles_users_user_id_fk"
+        FOREIGN KEY ("user_id")
+            REFERENCES users("id")
+                ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT "roles_users_role_id_fk"
+        FOREIGN KEY ("role_id")
+            REFERENCES roles("id")
                 ON UPDATE CASCADE ON DELETE CASCADE
 );

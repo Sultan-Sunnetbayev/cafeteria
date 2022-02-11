@@ -11,5 +11,10 @@ spring:
         password: root
     flyway:
         baseline-on-migrate: true
+    security:
+        oauth2:
+            resourceserver:
+                jwt:
+                    issuer-uri:
 server:
     port: 8080
