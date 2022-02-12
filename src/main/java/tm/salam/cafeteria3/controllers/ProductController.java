@@ -2,10 +2,15 @@ package tm.salam.cafeteria3.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import tm.salam.cafeteria3.Helper.FileUploadUtil;
 import tm.salam.cafeteria3.Helper.ResponseTransfer;
 import tm.salam.cafeteria3.dto.ProductDTO;
 import tm.salam.cafeteria3.service.ProductService;
+
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -45,9 +50,16 @@ public class ProductController {
     }
     @PutMapping(path = "/addOrEditProduct",consumes = {MediaType.MULTIPART_FORM_DATA_VALUE },produces = "application/json")
     @ResponseBody
-    public ResponseTransfer AddOrEditProduct(@ModelAttribute ProductDTO productDTO){
+    public ResponseTransfer AddOrEditProduct(@ModelAttribute ProductDTO productDTO,
+                                             @RequestParam("image")MultipartFile multipartFile) throws IOException {
+
+        String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
+        productDTO.setImagePath(fileName);
+
+        String uploadDir = "src/main/resources/product_photos";
 
         if(productService.AddOrEditProduct(productDTO)){
+            FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
             return new ResponseTransfer("product successful edited",true);
         }else{
             return new ResponseTransfer("product don't edited",false);

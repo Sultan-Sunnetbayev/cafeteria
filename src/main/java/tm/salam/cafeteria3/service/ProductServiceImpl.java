@@ -72,7 +72,7 @@ public class ProductServiceImpl implements ProductService {
 
         Product product=productRepository.getProductByCode(code);
 
-        if(product==null){
+        if(product==null || product.getAmount()<1){
             return false;
         }
         else{

@@ -17,4 +17,4 @@ spring:
                 jwt:
                     issuer-uri:
 server:
-    port: 8080
+    port: 8000
