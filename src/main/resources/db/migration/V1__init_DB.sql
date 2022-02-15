@@ -35,7 +35,8 @@ CREATE TABLE employees (
 CREATE TABLE sales_products(
     "id" SERIAL PRIMARY KEY NOT NULL,
     "product_id" INT,
-    "employee_id" INT NOT NULL,
+    "employee_id" INT,
+    "user_id" INT,
     "product_name" CHARACTER VARYING(10) NOT NULL,
     "price" DOUBLE PRECISION NOT NULL,
     "amount" INT NOT NULL,
@@ -46,9 +47,13 @@ CREATE TABLE sales_products(
         FOREIGN KEY ("product_id")
             REFERENCES products("id")
                 ON UPDATE CASCADE ON DELETE SET NULL,
-    CONSTRAINT sales_products_user_id_fk
+    CONSTRAINT sales_products_employee_id_fk
         FOREIGN KEY ("employee_id")
             REFERENCES employees("id")
+                ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT sales_products_user_id_fk
+        FOREIGN KEY ("user_id")
+            REFERENCES users("id")
                 ON UPDATE CASCADE ON DELETE CASCADE
 
 );
@@ -56,18 +61,24 @@ CREATE TABLE sales_products(
 CREATE TABLE return_products(
     "id" SERIAL PRIMARY KEY NOT NULL,
     "product_id" INT,
-    "employee_id" INT NOT NULL,
+    "employee_id" INT,
+    "user_id" INT,
     "product_name" CHARACTER VARYING(10) NOT NULL,
     "price" DOUBLE PRECISION NOT NULL,
+--     "sum" DOUBLE PRECISION,
     "amount" INT NOT NULL,
     "created" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT return_products_product_id_fk
         FOREIGN KEY ("product_id")
             REFERENCES products("id")
                 ON UPDATE CASCADE ON DELETE SET NULL,
-    CONSTRAINT return_products_user_id_fk
+    CONSTRAINT return_products_employee_id_fk
         FOREIGN KEY ("employee_id")
             REFERENCES employees("id")
+                ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT return_products_user_id_fk
+        FOREIGN KEY ("user_id")
+            REFERENCES users("id")
                 ON UPDATE CASCADE ON DELETE CASCADE
 
 );
@@ -87,6 +98,7 @@ CREATE TABLE spoiled_products(
 CREATE TABLE bucket(
     "id" SERIAL PRIMARY KEY NOT NULL,
     "employee_id" INT,
+    "user_id" INT,
     "product_id" INT NOT NULL ,
     "amount" INT,
     "sum" DOUBLE PRECISION ,
@@ -97,7 +109,12 @@ CREATE TABLE bucket(
     CONSTRAINT bucket_employee_id_fk
         FOREIGN KEY ("employee_id")
             REFERENCES employees("id")
+                ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT bucket_user_id_fk
+        FOREIGN KEY ("user_id")
+            REFERENCES users("id")
                 ON UPDATE CASCADE ON DELETE CASCADE
+
 );
 
 CREATE TABLE roles(

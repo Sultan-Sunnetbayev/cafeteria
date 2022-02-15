@@ -2,6 +2,7 @@ package tm.salam.cafeteria3.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import tm.salam.cafeteria3.dao.ProductRepository;
 import tm.salam.cafeteria3.dto.ProductDTO;
 import tm.salam.cafeteria3.models.Product;
@@ -39,6 +40,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public boolean AddOrEditProduct(ProductDTO productDTO){
 
         Product product=productRepository.getProductByCode(productDTO.getCode());
@@ -96,6 +98,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public boolean RemoveProduct(String code) {
 
         if(this.findProductByCode(code)){

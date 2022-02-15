@@ -33,6 +33,12 @@ public class User{
     private LocalDateTime created;
     @UpdateTimestamp
     private LocalDateTime updated;
+    @OneToOne(optional = true,mappedBy = "user")
+    private Bucket bucket;
+    @OneToOne(optional = true,mappedBy = "user")
+    private SalesProduct salesProduct;
+    @OneToOne(optional =true, mappedBy = "user")
+    private ReturnProduct returnProduct;
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "roles_users",

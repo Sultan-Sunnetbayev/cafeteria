@@ -36,4 +36,8 @@ public class SalesProduct {
     @OneToOne(optional =true,cascade = CascadeType.ALL)
     @JoinColumn(name = "employee_id")
     private Employee employee;
+    @OneToOne(optional =true,cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
+    private User user;
+
 }

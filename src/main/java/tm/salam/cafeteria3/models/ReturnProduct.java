@@ -25,6 +25,7 @@ public class ReturnProduct {
     private String productName;
     @Column(name = "price")
     private Double sellPrice;
+//    private Double sum;
     private int amount;
     @CreationTimestamp
     private LocalDateTime created;
@@ -34,5 +35,8 @@ public class ReturnProduct {
     @OneToOne(optional =true,cascade = CascadeType.ALL)
     @JoinColumn(name = "employee_id")
     private Employee employee;
+    @OneToOne(optional =true,cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
+    private User user;
 
 }

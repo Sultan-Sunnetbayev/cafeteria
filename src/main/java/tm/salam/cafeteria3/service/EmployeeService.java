@@ -15,4 +15,6 @@ public interface EmployeeService {
     boolean UpdateEmployeeProfile(EmployeeDTO employeeDTO);
     boolean RemoveEmployee(int id);
     EmployeeDTO getEmployeeById(int id);
+    Employee getEmployeeByCode(String code);
+    EmployeeDTO getEmployeeDTOByCode(String code);
 }

@@ -31,8 +31,9 @@ public class ProductController {
     }
 
 
-    @PostMapping(path = "/getProductByCode",consumes = {MediaType.MULTIPART_FORM_DATA_VALUE },produces = "application/json")
-    public ProductDTO getProductByCode(@RequestParam String code){
+    @PostMapping(path = "/getProductByCode",consumes = {MediaType.MULTIPART_FORM_DATA_VALUE },
+            produces = "application/json")
+    public ProductDTO getProductByCode(@RequestParam("code") String code){
 
         if(productService.findProductByCode(code)){
 
@@ -48,7 +49,8 @@ public class ProductController {
         }
 
     }
-    @PutMapping(path = "/addOrEditProduct",consumes = {MediaType.MULTIPART_FORM_DATA_VALUE },produces = "application/json")
+    @PutMapping(path = "/addOrEditProduct",consumes = {MediaType.MULTIPART_FORM_DATA_VALUE },
+            produces = "application/json")
     @ResponseBody
     public ResponseTransfer AddOrEditProduct(@ModelAttribute ProductDTO productDTO,
                                              @RequestParam("image")MultipartFile multipartFile) throws IOException {

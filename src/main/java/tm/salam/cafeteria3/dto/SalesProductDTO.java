@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import tm.salam.cafeteria3.models.Employee;
 import tm.salam.cafeteria3.models.Product;
+import tm.salam.cafeteria3.models.User;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -26,5 +27,5 @@ public class SalesProductDTO {
     private LocalDateTime created;
     private Product product;
     private Employee employee;
-
+    private User user;
 }

@@ -22,6 +22,6 @@ public class ReturnProductDTO {
     private int amount;
     private LocalDateTime created;
     private Product product;
-    private Employee employee;
+    private String employeeName;
 
 }

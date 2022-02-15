@@ -1,5 +1,7 @@
 INSERT INTO users(id,username,password,email,status)
-VALUES (1,'admin','admin','admim@admin.com','ACTIVE');
+VALUES (1,'admin','admin','admin@admin.com','ACTIVE');
+
+ALTER SEQUENCE users_id_seq RESTART WITH 2;
 
 INSERT INTO roles(id,name)
 VALUES (1,'ROLE_ADMIN'),

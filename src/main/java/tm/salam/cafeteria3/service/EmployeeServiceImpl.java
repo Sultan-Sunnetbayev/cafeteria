@@ -32,7 +32,6 @@ public class EmployeeServiceImpl implements EmployeeService{
                 .map(this::toDTO)
                 .collect(Collectors.toList());
     }
-
     private EmployeeDTO toDTO(Employee employee) {
 
         return EmployeeDTO.builder()
@@ -89,6 +88,7 @@ public class EmployeeServiceImpl implements EmployeeService{
         }
 
     @Override
+    @Transactional
     public boolean RemoveEmployee(int id) {
 
         Employee employee=employeeRepository.findById(id);
@@ -105,6 +105,10 @@ public class EmployeeServiceImpl implements EmployeeService{
 
         Employee employee=employeeRepository.findById(id);
 
+        if(employee==null){
+            return null;
+        }
+
         return EmployeeDTO.builder()
                 .imagePath(employee.getImagePath())
                 .name(employee.getName())
@@ -113,4 +117,35 @@ public class EmployeeServiceImpl implements EmployeeService{
                 .build();
     }
 
+    @Override
+    public Employee getEmployeeByCode(String code) {
+
+        Employee employee=employeeRepository.findByCode(code);
+
+        if(employee==null){
+            return null;
+        }else{
+            return employee;
+        }
+
+    }
+
+    @Override
+    public EmployeeDTO getEmployeeDTOByCode(String code){
+
+        Employee employee=employeeRepository.findByCode(code);
+
+        if(employee==null){
+
+            return null;
+        }else{
+
+            return EmployeeDTO.builder()
+                    .imagePath(employee.getImagePath())
+                    .name(employee.getName())
+                    .surname(employee.getSurname())
+                    .grade(employee.getGrade())
+                    .build();
+        }
+    }
 }
