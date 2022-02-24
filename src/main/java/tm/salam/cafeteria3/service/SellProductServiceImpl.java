@@ -6,100 +6,82 @@ import org.springframework.transaction.annotation.Transactional;
 import tm.salam.cafeteria3.dao.BucketRepository;
 import tm.salam.cafeteria3.dao.EmployeeRepository;
 import tm.salam.cafeteria3.dao.ProductRepository;
-import tm.salam.cafeteria3.dao.SalesProductRepository;
+import tm.salam.cafeteria3.dto.EmployeeDTO;
 import tm.salam.cafeteria3.dto.ProductDTO;
-import tm.salam.cafeteria3.dto.SalesProductDTO;
-import tm.salam.cafeteria3.models.Bucket;
-import tm.salam.cafeteria3.models.Product;
-import tm.salam.cafeteria3.models.SalesProduct;
+import tm.salam.cafeteria3.models.Employee;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class SellProductServiceImpl implements SellProductService {
 
-    private final SalesProductRepository salesProductRepository;
+    private final SalesProductService salesProductService;
     private final EmployeeRepository employeeRepository;
-    private final BucketRepository bucketRepository;
+    private final BucketService bucketService;
     private final ProductRepository productRepository;
 
     @Autowired
-    public SellProductServiceImpl(SalesProductRepository salesProductRepository, EmployeeRepository employeeRepository, BucketRepository bucketRepository, ProductRepository productRepository) {
-        this.salesProductRepository = salesProductRepository;
+    public SellProductServiceImpl(SalesProductService salesProductService,
+                                  EmployeeRepository employeeRepository,
+                                  BucketService bucketService, ProductRepository productRepository) {
+        this.salesProductService = salesProductService;
         this.employeeRepository = employeeRepository;
-        this.bucketRepository = bucketRepository;
+        this.bucketService = bucketService;
         this.productRepository = productRepository;
     }
 
     @Override
-    public List<SalesProductDTO> getAllSalesProducts(){
+    @Transactional
+    public boolean AddSellProductToBucket(String code) {
 
-        List<SalesProductDTO>salesProductDTOS=new ArrayList<>();
-        List<SalesProduct>salesProducts=salesProductRepository.findAll();
-
-        for(SalesProduct salesProduct:salesProducts){
-
-            salesProductDTOS.add(
-                    SalesProductDTO.builder()
-                            .productName(salesProduct.getProductName())
-                            .product(salesProduct.getProduct())
-                            .amount(salesProduct.getAmount())
-                            .imagePath(salesProduct.getImagePath())
-                            .sellPrice(salesProduct.getSellPrice())
-                            .employee(salesProduct.getEmployee())
-                            .user(salesProduct.getUser())
-                            .build()
-            );
+        if (productRepository.findByCode(code) != null) {
+            bucketService.AddProduct(code);
+            return true;
+        } else {
+            return false;
         }
-        return salesProductDTOS;
+
+    }
+
+    @Override
+    public List<ProductDTO> getAllSellProducts() {
+
+        return bucketService.getAllProduct();
+    }
+
+    @Override
+    public EmployeeDTO getClientByCode(String code) {
+
+        Employee employee = employeeRepository.findByCode(code);
+
+        if (employee == null) {
+            
+            return null;
+        }
+        bucketService.setEmployeeInBucket(employee);
+
+        return EmployeeDTO.builder()
+                .name(employee.getName())
+                .surname(employee.getSurname())
+                .imagePath(employee.getImagePath())
+                .grade(employee.getGrade())
+                .build();
+
     }
 
     @Override
     @Transactional
-    public boolean SaveSalesProduct(){
+    public boolean SaveSellProducts() {
 
-        List<Bucket>buckets=bucketRepository.findAll();
+        if (bucketService.CheckClient()) {
 
-        for (Bucket bucket:buckets){
-            Product product=productRepository.getProductByCode(bucket.getProduct().getCode());
+            salesProductService.SaveSalesProducts();
+            bucketService.RemoveBucket();
 
-            if(product!=null){
-                product.setAmount(product.getAmount()-bucket.getAmount());
-            }
-            SalesProduct salesProduct=SalesProduct.builder()
-                            .product(bucket.getProduct())
-                            .productName(bucket.getProduct().getName())
-                            .amount(bucket.getAmount())
-                            .imagePath(bucket.getProduct().getImagePath())
-                            .employee(bucket.getEmployee())
-                            .user(bucket.getUser())
-                            .sellPrice(bucket.getProduct().getSellPrice())
-                            .build();
+            return true;
+        } else {
 
-            salesProductRepository.save(salesProduct);
+            return false;
         }
-
-        return true;
-    }
-
-    @Override
-    public List<ProductDTO> getBoughtProductsEmployee(int id) {
-
-        List<SalesProduct> salesProducts = salesProductRepository.findByEmployeeId(id);
-        List<ProductDTO> productDTOS = new ArrayList<>();
-
-        for (SalesProduct salesProduct : salesProducts) {
-
-            productDTOS.add(ProductDTO.builder()
-                    .imagePath(salesProduct.getImagePath())
-                    .name(salesProduct.getProductName())
-                    .amount(salesProduct.getAmount())
-                    .sellPrice(salesProduct.getSellPrice())
-                    .build()
-
-            );
-        }
-        return productDTOS;
     }
 }

@@ -1,14 +1,14 @@
 package tm.salam.cafeteria3.service;
 
 
+import tm.salam.cafeteria3.dto.EmployeeDTO;
 import tm.salam.cafeteria3.dto.ProductDTO;
-import tm.salam.cafeteria3.dto.SalesProductDTO;
-
 import java.util.List;
 
 public interface SellProductService {
 
-    boolean SaveSalesProduct();
-    List<SalesProductDTO>getAllSalesProducts();
-    List<ProductDTO>getBoughtProductsEmployee(int id);
+    boolean AddSellProductToBucket(String code);
+    List<ProductDTO>getAllSellProducts();
+    EmployeeDTO getClientByCode(String code);
+    boolean SaveSellProducts();
 }

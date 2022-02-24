@@ -12,6 +12,7 @@ import tm.salam.cafeteria3.dto.EmployeeDTO;
 import tm.salam.cafeteria3.dto.ProductDTO;
 import tm.salam.cafeteria3.service.EmployeeService;
 import tm.salam.cafeteria3.service.ReturnProductService;
+import tm.salam.cafeteria3.service.SalesProductService;
 import tm.salam.cafeteria3.service.SellProductService;
 
 import java.io.IOException;
@@ -24,92 +25,109 @@ import java.util.Map;
 public class EmployeeController {
 
     private final EmployeeService employeeService;
-    private final SellProductService sellProductService;
-    private final ReturnProductService returnProductService;
+
 
     @Autowired
-    public EmployeeController(EmployeeService employeeService, SellProductService sellProductService,
-                              ReturnProductService returnProductService) {
+    public EmployeeController(EmployeeService employeeService) {
         this.employeeService = employeeService;
-        this.sellProductService = sellProductService;
-        this.returnProductService = returnProductService;
     }
 
+
     @GetMapping(produces = "application/json")
-    public List<EmployeeDTO> ShowAllEmployee(){
+    public List<EmployeeDTO> ShowAllEmployee() {
 
         return employeeService.getAllEmployee();
     }
 
-    @PostMapping(path = "/addEmployee",consumes ={ MediaType.MULTIPART_FORM_DATA_VALUE },
+
+    @PostMapping(path = "/addEmployee", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
             produces = "application/json")
     @ResponseBody
     public ResponseTransfer CreateNewEmployee(@ModelAttribute EmployeeDTO employeeDTO,
-                                              @RequestParam("image")MultipartFile multipartFile) throws IOException {
+                                              @RequestParam("image") MultipartFile multipartFile) throws IOException {
 
         String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
         employeeDTO.setImagePath(fileName);
 
         String uploadDir = "src/main/resources/employee_photos";
+        ResponseTransfer responseTransfer = employeeService.CreateNewEmployee(employeeDTO);
+        boolean check = responseTransfer.getStatus().booleanValue();
 
-        if (employeeService.CreateNewEmployee(employeeDTO)){
+        if (check) {
             FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
-            return new ResponseTransfer("employee successful added",true);
-        }else{
-            return new ResponseTransfer("employee don't added",false);
+
+            return responseTransfer;
+        } else {
+
+            return responseTransfer;
         }
 
     }
 
-    @PostMapping(path="/getEmployeeById",consumes ={ MediaType.MULTIPART_FORM_DATA_VALUE },produces = "application/json")
-    public ResponseEntity getEmployeeById(@RequestParam int id){
 
-        EmployeeDTO employeeDTO=employeeService.getEmployeeById(id);
-        Map<Object,Object> response=new HashMap<>();
+    @GetMapping(path = "/getEmployeeById", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
+            produces = "application/json")
+    public ResponseEntity getEmployeeById(@RequestParam("id") int id) {
 
-        if(employeeDTO==null){
-            response.put("employee don't found",false);
-        }else{
-            response.put("employee successful founded",true);
-            response.put("employee",employeeDTO);
+        EmployeeDTO employeeDTO = employeeService.getEmployeeDTOById(id);
+        Map<Object, Object> response = new HashMap<>();
+
+        if (employeeDTO == null) {
+
+            response.put("employee don't found", false);
+        } else {
+
+            response.put("employee successful founded", true);
+            response.put("employee", employeeDTO);
         }
 
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping(path = "/updateProfile",consumes = { MediaType.MULTIPART_FORM_DATA_VALUE },produces = "application/json")
-    @ResponseBody
-    public ResponseTransfer UpdateProfileEmployee(@ModelAttribute EmployeeDTO employeeDTO){
 
-        if(employeeService.UpdateEmployeeProfile(employeeDTO)) {
-            return new ResponseTransfer("employee successful updated", true);
-        }else{
-            return new ResponseTransfer("employee don't updated",false);
+    @PutMapping(path = "/updateProfile", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
+            produces = "application/json")
+    @ResponseBody
+    public ResponseTransfer UpdateProfileEmployee(@ModelAttribute EmployeeDTO employeeDTO) {
+
+        ResponseTransfer responseTransfer = employeeService.UpdateEmployeeProfile(employeeDTO);
+        boolean check = responseTransfer.getStatus().booleanValue();
+        if (check) {
+
+            return responseTransfer;
+        } else {
+
+            return responseTransfer;
         }
     }
 
-    @DeleteMapping(path = "/removeEmployee",consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},produces = "application/json")
-    @ResponseBody
-    public ResponseTransfer RemoveEmployee(@RequestParam("id")int id){
 
-        if(employeeService.RemoveEmployee(id)) {
+    @DeleteMapping(path = "/removeEmployee", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
+            produces = "application/json")
+    @ResponseBody
+    public ResponseTransfer RemoveEmployee(@RequestParam("id") int id) {
+
+        if (employeeService.RemoveEmployee(id)) {
             return new ResponseTransfer("employee successful removed", true);
-        }else {
+        } else {
             return new ResponseTransfer("employee don't removed", false);
         }
     }
 
-    @PostMapping(path = "/getBoughtProduct",consumes={MediaType.MULTIPART_FORM_DATA_VALUE},
-            produces = "application/json")
-    public List<ProductDTO> getBoughtProducts(@RequestParam("id")int id){
 
-        return sellProductService.getBoughtProductsEmployee(id);
+    @GetMapping(path = "/getBoughtProducts", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
+            produces = "application/json")
+    public List<ProductDTO> getBoughtProducts(@RequestParam("id") int id) {
+
+        return employeeService.getAllBoughtProducts(id);
     }
 
-    @PostMapping(path = "/getReturnedProduct",consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
-            produces = "application/json")
-    public List<ProductDTO>getReturnedProducts(@RequestParam("id")int id){
 
-        return returnProductService.getReturnedProductsEmployee(id);
+    @GetMapping(path = "/getReturnedProducts", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
+            produces = "application/json")
+    public List<ProductDTO> getReturnedProducts(@RequestParam("id") int id) {
+
+        return employeeService.getAllReturnedProducts(id);
     }
+
 }

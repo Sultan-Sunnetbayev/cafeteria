@@ -11,6 +11,9 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import tm.salam.cafeteria3.security.jwt.JwtConfigurer;
 import tm.salam.cafeteria3.security.jwt.JwtTokenProvider;
 import tm.salam.cafeteria3.service.UserService;
@@ -23,8 +26,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private JwtTokenProvider jwtTokenProvider;
 
     @Autowired
-    public SecurityConfig(JwtTokenProvider jwtTokenProvider){
-        this.jwtTokenProvider=jwtTokenProvider;
+    public SecurityConfig(JwtTokenProvider jwtTokenProvider) {
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
 //
@@ -80,10 +83,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //    }
 
 
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", new CorsConfiguration().applyPermitDefaultValues());
+        return source;
+    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
         http
+                .cors()
+                .and()
                 .httpBasic().disable()
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)

@@ -8,7 +8,10 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -31,13 +34,15 @@ public class Product {
     @Column(name = "sell_price")
     private Double sellPrice;
     @CreationTimestamp
-    private LocalDateTime created;
-    @OneToOne(optional = true,mappedBy = "product")
-    private SalesProduct salesProduct;
-    @OneToOne(optional = true,mappedBy = "product")
-    private ReturnProduct returnProduct;
-    @OneToOne(optional = true,mappedBy = "product")
-    private SpoiledProduct spoiledProduct;
-    @OneToOne(optional = true,mappedBy = "product")
+    private LocalDate created;
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    private List<SalesProduct> salesProducts;
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    private List<ReturnProduct> returnProducts;
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    private List<SpoiledProduct> spoiledProducts;
+    @OneToOne(mappedBy = "product", cascade = CascadeType.DETACH)
     private Bucket bucket;
+
+
 }

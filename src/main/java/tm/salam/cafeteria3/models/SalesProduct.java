@@ -8,7 +8,9 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Data
 @NoArgsConstructor
@@ -29,15 +31,13 @@ public class SalesProduct {
     @Column(name = "image_path")
     private String imagePath;
     @CreationTimestamp
-    private LocalDateTime created;
-    @OneToOne(optional = true,cascade =CascadeType.ALL)
+    private LocalDate created;
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "product_id")
     private Product product;
-    @OneToOne(optional =true,cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "employee_id")
     private Employee employee;
-    @OneToOne(optional =true,cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id")
-    private User user;
 
 }
