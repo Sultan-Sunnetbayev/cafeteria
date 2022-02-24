@@ -32,7 +32,6 @@ public class SalesProduct {
     private String imagePath;
     @CreationTimestamp
     private LocalDate created;
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "product_id")
     private Product product;

@@ -4,16 +4,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import tm.salam.cafeteria3.dto.ProductDTO;
+import org.springframework.web.multipart.MultipartFile;
 import tm.salam.cafeteria3.dto.ReturnProductDTO;
+import tm.salam.cafeteria3.generator.QRCodeGenerator;
 import tm.salam.cafeteria3.models.Bucket;
 import tm.salam.cafeteria3.models.Employee;
-import tm.salam.cafeteria3.models.ReturnProduct;
 import tm.salam.cafeteria3.service.BucketService;
 import tm.salam.cafeteria3.service.EmployeeService;
 import tm.salam.cafeteria3.service.ProductService;
 import tm.salam.cafeteria3.service.ReturnProductService;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,17 +27,20 @@ public class ReturnedProductController {
     private final ProductService productService;
     private final BucketService bucketService;
     private final EmployeeService employeeService;
+    private final QRCodeGenerator qrCodeGenerator;
 
     @Autowired
     public ReturnedProductController(ReturnProductService returnProductService,
                                      ProductService productService,
                                      BucketService bucketService,
-                                     EmployeeService employeeService) {
+                                     EmployeeService employeeService,
+                                     QRCodeGenerator qrCodeGenerator) {
 
         this.returnProductService = returnProductService;
         this.productService = productService;
         this.bucketService = bucketService;
         this.employeeService = employeeService;
+        this.qrCodeGenerator = qrCodeGenerator;
     }
 
     @GetMapping(produces = "application/json")
@@ -75,15 +79,16 @@ public class ReturnedProductController {
     }
 
     @PostMapping(path = "/getEmployee", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}, produces = "application/json")
-    public ResponseEntity getEmployeeByCode(@RequestParam("code") String code) {
+    public ResponseEntity getEmployeeByCode(@RequestParam("QRCode") MultipartFile multipartFile) throws IOException {
 
-        Employee employee = employeeService.getEmployeeByCode(code);
-
+        String employeeCode = qrCodeGenerator.decodeQRCode(multipartFile);
+        Employee employee = employeeService.getEmployeeByCode(employeeCode);
         Map<Object, Object> response = new HashMap<>();
+
         if (employee != null) {
 
             bucketService.setEmployeeInBucket(employee);
-            response.put("employee successful found", employeeService.getEmployeeDTOByCode(code));
+            response.put("employee successful found", employeeService.getEmployeeDTOByCode(employeeCode));
 
         } else {
             response.put("employee don't found", false);
@@ -99,6 +104,7 @@ public class ReturnedProductController {
         List<Bucket> buckets = bucketService.getAllBucket();
 
         if (buckets == null || !bucketService.CheckClient()) {
+
             response.put("products don't returned", false);
         } else {
             if (returnProductService.SaveReturnProducts(buckets)) {

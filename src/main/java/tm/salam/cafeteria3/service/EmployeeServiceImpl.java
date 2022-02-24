@@ -1,8 +1,7 @@
 package tm.salam.cafeteria3.service;
 
+import com.google.zxing.WriterException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,10 +11,12 @@ import tm.salam.cafeteria3.dao.ReturnProductRepository;
 import tm.salam.cafeteria3.dao.SalesProductRepository;
 import tm.salam.cafeteria3.dto.EmployeeDTO;
 import tm.salam.cafeteria3.dto.ProductDTO;
+import tm.salam.cafeteria3.generator.QRCodeGenerator;
 import tm.salam.cafeteria3.models.Employee;
 import tm.salam.cafeteria3.models.ReturnProduct;
 import tm.salam.cafeteria3.models.SalesProduct;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -26,16 +27,19 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final PasswordEncoder passwordEncoder;
     private final SalesProductRepository salesProductRepository;
     private final ReturnProductRepository returnProductRepository;
+    private final QRCodeGenerator qrCodeGenerator;
 
     @Autowired
     public EmployeeServiceImpl(EmployeeRepository employeeRepository,
                                PasswordEncoder passwordEncoder,
                                SalesProductRepository salesProductRepository,
-                               ReturnProductRepository returnProductRepository) {
+                               ReturnProductRepository returnProductRepository,
+                               QRCodeGenerator qrCodeGenerator) {
         this.employeeRepository = employeeRepository;
         this.passwordEncoder = passwordEncoder;
         this.salesProductRepository = salesProductRepository;
         this.returnProductRepository = returnProductRepository;
+        this.qrCodeGenerator = qrCodeGenerator;
     }
 
     @Override
@@ -75,19 +79,33 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .password(passwordEncoder.encode(employeeDTO.getPassword()))
                 .grade(employeeDTO.getGrade())
                 .imagePath(employeeDTO.getImagePath())
-                .code(employeeDTO.getCode())
                 .build();
 
         employeeRepository.save(employee);
 
-        if (employeeRepository.findByCode(employeeDTO.getCode()) != null) {
+        if (employeeRepository.findEmployeeByNameAndSurname(employeeDTO.getName(), employeeDTO.getSurname()) != null) {
 
-            response.setMessage("success");
-            response.setStatus(true);
+            try {
+                employee.setCode(qrCodeGenerator.GenerateQRCode(String.valueOf(String.valueOf(employee.getId()))));
+                response.setMessage("success");
+                response.setStatus(true);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                response.setMessage("employee don't added");
+                response.setStatus(false);
+
+            } catch (WriterException e) {
+                e.printStackTrace();
+                response.setMessage("employee don't added");
+                response.setStatus(false);
+
+            }
+
         } else {
 
             response.setMessage("employee don't added");
-            response.setStatus(true);
+            response.setStatus(false);
         }
 
         return response;
@@ -98,7 +116,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     public ResponseTransfer UpdateEmployeeProfile(EmployeeDTO employeeDTO) {
 
         Employee savedEmployee = employeeRepository.findEmployeeById(employeeDTO.getId());
-        Map<Object, Object> response = new HashMap<>();
 
         if (savedEmployee == null) {
 
@@ -112,17 +129,9 @@ public class EmployeeServiceImpl implements EmployeeService {
                 return new ResponseTransfer("employee with name and surname already added", false);
             }
         }
-        if (!Objects.equals(employeeDTO.getCode(), savedEmployee.getCode())) {
-
-            if (employeeRepository.findFirstByCode(employeeDTO.getCode()) != null) {
-
-                return new ResponseTransfer("code employee's equals other employee's code", false);
-            }
-        }
 
         savedEmployee.setName(employeeDTO.getName());
         savedEmployee.setSurname(employeeDTO.getSurname());
-        savedEmployee.setCode(employeeDTO.getCode());
         if (!passwordEncoder.matches(employeeDTO.getPassword(), savedEmployee.getPassword())) {
             savedEmployee.setPassword(passwordEncoder.encode(employeeDTO.getPassword()));
         }
@@ -143,6 +152,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee employee = employeeRepository.findEmployeeById(id);
 
         if (employee == null) {
+
             return false;
         }
         employeeRepository.deleteById(id);
@@ -156,6 +166,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee employee = employeeRepository.findEmployeeById(id);
 
         if (employee == null) {
+
             return null;
         }
 
@@ -170,11 +181,14 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public Employee getEmployeeByCode(String code) {
 
+        code = code + ".png";
         Employee employee = employeeRepository.findByCode(code);
 
         if (employee == null) {
+
             return null;
         } else {
+
             return employee;
         }
 
@@ -183,11 +197,13 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public EmployeeDTO getEmployeeDTOByCode(String code) {
 
+        code = code + ".png";
         Employee employee = employeeRepository.findByCode(code);
 
         if (employee == null) {
 
             return null;
+
         } else {
 
             return EmployeeDTO.builder()

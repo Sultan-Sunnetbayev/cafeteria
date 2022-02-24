@@ -29,9 +29,9 @@ public class ProductController {
 
 
     @GetMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}, produces = "application/json")
-    public List<ProductDTO> ShowAllProducts(@RequestParam(value = "name", required = false) Optional<String> name) {
+    public List<ProductDTO> ShowAllProducts(@RequestParam(value = "parameter", required = false) Optional<String> parameter) {
 
-        return productService.getAllProducts(name);
+        return productService.getAllProducts(parameter);
     }
 
 
@@ -73,7 +73,7 @@ public class ProductController {
             return new ResponseTransfer("product successful added or edited", true);
         } else {
 
-            return new ResponseTransfer("product don't added or edited", false);
+            return new ResponseTransfer("product don't added and edited", false);
         }
 
     }

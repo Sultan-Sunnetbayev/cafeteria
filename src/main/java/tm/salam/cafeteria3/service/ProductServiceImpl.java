@@ -40,7 +40,7 @@ public class ProductServiceImpl implements ProductService {
                 findAll(productSpecification.ProductFilterByParameter(parameter.get()));
         List<Product> products2 = null;
         List<Product> products3 = null;
-        if (CheckStrIsInteger(parameter.get())) {
+        if (CheckParameterIsIntegerNumber(parameter.get())) {
             products2 = productRepository.findAll(productSpecification.ProductFilterByAmount(parameter.get()));
         }
         List<ProductDTO> productDTOS = new ArrayList<>();
@@ -53,7 +53,7 @@ public class ProductServiceImpl implements ProductService {
                 productDTOS.add(toDTO(product));
             }
         }
-        if (CheckStrIsDouble(parameter.get())) {
+        if (CheckParameterIsDoubleNumber(parameter.get())) {
             products3 = productRepository.findAll(productSpecification.ProductFilterByPrice(parameter.get()));
         }
         if (products3 != null) {
@@ -65,7 +65,7 @@ public class ProductServiceImpl implements ProductService {
         return productDTOS;
     }
 
-    private boolean CheckStrIsInteger(String str) {
+    private boolean CheckParameterIsIntegerNumber(String str) {
 
         if (str.isEmpty() || str == null) {
             return false;
@@ -81,7 +81,7 @@ public class ProductServiceImpl implements ProductService {
         return check;
     }
 
-    private boolean CheckStrIsDouble(String str) {
+    private boolean CheckParameterIsDoubleNumber(String str) {
 
         if (str.isEmpty() || str == null) {
             return false;
@@ -98,7 +98,7 @@ public class ProductServiceImpl implements ProductService {
             }
         }
         if (scr > 1) check = false;
-        
+
         return check;
     }
 

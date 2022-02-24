@@ -26,6 +26,5 @@ public class EmployeeDTO {
     private String password;
     private String grade;
     private String imagePath;
-    private String code;
 
 }

@@ -23,6 +23,7 @@ import tm.salam.cafeteria3.models.Role;
 import tm.salam.cafeteria3.models.User;
 import tm.salam.cafeteria3.security.jwt.JwtTokenProvider;
 import tm.salam.cafeteria3.service.UserService;
+
 import java.awt.image.ImageProducer;
 import java.util.Base64;
 import java.util.HashMap;
@@ -46,21 +47,21 @@ public class LoginController {
     }
 
 
-    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},produces = "application/json")
-    public ResponseEntity login(@RequestParam("email")String email,
-                                @RequestParam("password")String password) {
+    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}, produces = "application/json")
+    public ResponseEntity login(@RequestParam("email") String email,
+                                @RequestParam("password") String password) {
 
         try {
-            User user=userService.getUserByEmail(email);
+            User user = userService.getUserByEmail(email);
 
-            if(user==null){
-                throw new UsernameNotFoundException("User with email "+email+" not found");
+            if (user == null) {
+                throw new UsernameNotFoundException("User with email " + email + " not found");
             }
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(),password));
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), password));
 
-            String token=jwtTokenProvider.CreateToken(email,user.getRoles(),user.getId());
-            Map<Object,Object>response=new HashMap<>();
-            response.put("token",token);
+            String token = jwtTokenProvider.CreateToken(email, user.getRoles(), user.getId());
+            Map<Object, Object> response = new HashMap<>();
+            response.put("token", token);
 
             return ResponseEntity.ok(response);
 
@@ -71,36 +72,20 @@ public class LoginController {
 
 
     @GetMapping(produces = "application/json")
-    public ResponseEntity getUserByToken(@RequestHeader(value = "Authorization")String token){
-
-//        String[] chunks=token.split("\\.");
-//        Base64.Decoder decoder = Base64.getUrlDecoder();
-//        Map<Object,Object>response=new HashMap<>();
-//
-//        String header = new String(decoder.decode(chunks[0]));
-//        String payload = new String(decoder.decode(chunks[1]));
-//
-//        response.put("username",header);
-//        response.put("data",payload);
-//
-//        return ResponseEntity.ok(response);
+    public ResponseEntity getUserByToken(@RequestHeader(value = "Authorization") String token) {
 
         JsonParser parser = JsonParserFactory.getJsonParser();
         Map<String, ?> tokenData = parser.parseMap(JwtHelper.decode(token).getClaims());
-        Map<Object,Object>response=new HashMap<>();
-        LoginDTO userDTO=userService.getLoginDTOById(Integer.valueOf((String)tokenData.get("id")));
+        Map<Object, Object> response = new HashMap<>();
+        LoginDTO userDTO = userService.getLoginDTOById(Integer.valueOf((String) tokenData.get("id")));
 
-        if(userDTO==null){
-            response.put("this user not found",false);
-        }else{
-            response.put("user successful founded",userDTO);
+        if (userDTO == null) {
+            response.put("this user not found", false);
+        } else {
+            response.put("user successful founded", userDTO);
         }
 
         return ResponseEntity.ok(response);
     }
-//    @GetMapping("/login-error")
-//    public ResponseTransfer loginError(){
-//
-//        return new ResponseTransfer("email or password user invalid ",false);
-//    }
+
 }

@@ -60,7 +60,7 @@ public class AdminController {
     }
 
 
-    @PutMapping(path = "/updateProfileAdmin", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
+    @PutMapping(path = "/updateProfile", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
             produces = "application/json")
     @ResponseBody
     public ResponseEntity UpdateProfileAdmin(@ModelAttribute UserDTO userDTO,
@@ -73,7 +73,7 @@ public class AdminController {
         Map<Object, Object> response = new HashMap<>();
         int id = Integer.valueOf((String) tokenData.get("id"));
 
-        if (!passwordEncoder.matches(password, userService.getUserDTOById(id).getPassword())) {
+        if (!passwordEncoder.matches(password, userService.getUserById(id).getPassword())) {
 
             response.put("old password don't right", false);
 

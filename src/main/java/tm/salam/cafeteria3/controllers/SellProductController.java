@@ -4,14 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import tm.salam.cafeteria3.dto.EmployeeDTO;
 import tm.salam.cafeteria3.dto.ProductDTO;
-import tm.salam.cafeteria3.models.Employee;
-import tm.salam.cafeteria3.service.BucketService;
-import tm.salam.cafeteria3.service.EmployeeService;
-import tm.salam.cafeteria3.service.SalesProductService;
+import tm.salam.cafeteria3.generator.QRCodeGenerator;
 import tm.salam.cafeteria3.service.SellProductService;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,10 +20,13 @@ import java.util.Map;
 public class SellProductController {
 
     private final SellProductService sellProductService;
+    private final QRCodeGenerator qrCodeGenerator;
 
     @Autowired
-    public SellProductController(SellProductService sellProductService) {
+    public SellProductController(SellProductService sellProductService,
+                                 QRCodeGenerator qrCodeGenerator) {
         this.sellProductService = sellProductService;
+        this.qrCodeGenerator = qrCodeGenerator;
     }
 
     @PostMapping(path = "/getProductByCode",
@@ -59,9 +61,9 @@ public class SellProductController {
 
     @PostMapping(path = "/getEmployeeByCode", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
             produces = "application/json")
-    public ResponseEntity getEmployeeByCode(@RequestParam("code") String code) {
+    public ResponseEntity getEmployeeByCode(@RequestParam("QRCode") MultipartFile multipartFile) throws IOException {
 
-        EmployeeDTO employeeDTO = sellProductService.getClientByCode(code);
+        EmployeeDTO employeeDTO = sellProductService.getClientByCode(qrCodeGenerator.decodeQRCode(multipartFile));
         Map<Object, Object> response = new HashMap<>();
 
         if (employeeDTO == null) {

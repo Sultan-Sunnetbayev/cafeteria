@@ -35,9 +35,12 @@ public class SellProductServiceImpl implements SellProductService {
     public boolean AddSellProductToBucket(String code) {
 
         if (productRepository.findByCode(code) != null) {
+
             bucketService.AddProduct(code);
+
             return true;
         } else {
+
             return false;
         }
 
@@ -52,10 +55,11 @@ public class SellProductServiceImpl implements SellProductService {
     @Override
     public EmployeeDTO getClientByCode(String code) {
 
+        code = code + ".png";
         Employee employee = employeeRepository.findByCode(code);
 
         if (employee == null) {
-            
+
             return null;
         }
         bucketService.setEmployeeInBucket(employee);

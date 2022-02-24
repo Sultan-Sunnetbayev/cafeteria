@@ -21,4 +21,5 @@ public class SpoiledProductDTO {
     private Double sellPrice;
     private int amount;
     private LocalDateTime created;
+    
 }

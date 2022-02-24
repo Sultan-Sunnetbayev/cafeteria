@@ -22,4 +22,5 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
     Employee findEmployeeByNameAndSurname(String name, String surname);
 
     void deleteEmployeeById(int id);
+
 }

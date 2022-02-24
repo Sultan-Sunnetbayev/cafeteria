@@ -25,15 +25,15 @@ public class SalesProductController {
 
 
     @GetMapping(produces = "application/json")
-    public List<ProductDTO>ShowAllSalesProducts(){
+    public List<ProductDTO> ShowAllSalesProducts() {
 
         return salesProductService.getAllSalesProducts();
     }
 
 
-    @PostMapping(path = "/date",consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
+    @GetMapping(path = "/date", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
             produces = "application/json")
-    public List<ProductDTO>ShowAllSalesProductsByDate(@RequestParam("date")@DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date){
+    public List<ProductDTO> ShowAllSalesProductsByDate(@RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
 
         return salesProductService.getSalesProductsWithDate(date);
     }

@@ -43,6 +43,5 @@ public class Product {
     private List<SpoiledProduct> spoiledProducts;
     @OneToOne(mappedBy = "product", cascade = CascadeType.DETACH)
     private Bucket bucket;
-
-
+    
 }

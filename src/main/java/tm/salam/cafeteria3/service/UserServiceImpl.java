@@ -149,7 +149,7 @@ public class UserServiceImpl implements UserService {
     public boolean RemoveUserById(int id) {
 
         User user = userRepository.findById(id);
-        System.out.println(user.getRoles().get(0).getName());
+
         if (user == null || Objects.equals(user.getRoles().get(0).getName(), "ROLE_ADMIN")) {
 
             return false;
@@ -214,7 +214,6 @@ public class UserServiceImpl implements UserService {
         return UserDTO.builder()
                 .imagePath(user.getImagePath())
                 .username(user.getUsername())
-                .password(user.getPassword())
                 .email(user.getEmail())
                 .build();
     }

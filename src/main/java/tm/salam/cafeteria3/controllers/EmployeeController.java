@@ -3,6 +3,7 @@ package tm.salam.cafeteria3.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -10,10 +11,9 @@ import tm.salam.cafeteria3.Helper.FileUploadUtil;
 import tm.salam.cafeteria3.Helper.ResponseTransfer;
 import tm.salam.cafeteria3.dto.EmployeeDTO;
 import tm.salam.cafeteria3.dto.ProductDTO;
+import tm.salam.cafeteria3.generator.QRCodeGenerator;
+import tm.salam.cafeteria3.models.Employee;
 import tm.salam.cafeteria3.service.EmployeeService;
-import tm.salam.cafeteria3.service.ReturnProductService;
-import tm.salam.cafeteria3.service.SalesProductService;
-import tm.salam.cafeteria3.service.SellProductService;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -25,11 +25,16 @@ import java.util.Map;
 public class EmployeeController {
 
     private final EmployeeService employeeService;
-
+    private final QRCodeGenerator qrCodeGenerator;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public EmployeeController(EmployeeService employeeService) {
+    public EmployeeController(EmployeeService employeeService,
+                              QRCodeGenerator qrCodeGenerator,
+                              PasswordEncoder passwordEncoder) {
         this.employeeService = employeeService;
+        this.qrCodeGenerator = qrCodeGenerator;
+        this.passwordEncoder = passwordEncoder;
     }
 
 
@@ -40,7 +45,7 @@ public class EmployeeController {
     }
 
 
-    @PostMapping(path = "/addEmployee", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
+    @PostMapping(path = "/add", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
             produces = "application/json")
     @ResponseBody
     public ResponseTransfer CreateNewEmployee(@ModelAttribute EmployeeDTO employeeDTO,
@@ -88,8 +93,21 @@ public class EmployeeController {
     @PutMapping(path = "/updateProfile", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
             produces = "application/json")
     @ResponseBody
-    public ResponseTransfer UpdateProfileEmployee(@ModelAttribute EmployeeDTO employeeDTO) {
+    public ResponseTransfer UpdateProfileEmployee(@ModelAttribute EmployeeDTO employeeDTO,
+                                                  @RequestParam("oldPassword") String password,
+                                                  @RequestParam("QRCode") MultipartFile multipartFile) throws IOException {
 
+        Employee employee = employeeService.getEmployeeByCode(qrCodeGenerator.decodeQRCode(multipartFile));
+
+        if (employee == null) {
+
+            return new ResponseTransfer("employee don't found with QRCode's", false);
+        }
+        if (!passwordEncoder.matches(password, employee.getPassword())) {
+
+            return new ResponseTransfer("old password employee don't right", false);
+        }
+        employeeDTO.setId(employee.getId());
         ResponseTransfer responseTransfer = employeeService.UpdateEmployeeProfile(employeeDTO);
         boolean check = responseTransfer.getStatus().booleanValue();
         if (check) {
@@ -102,7 +120,7 @@ public class EmployeeController {
     }
 
 
-    @DeleteMapping(path = "/removeEmployee", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
+    @DeleteMapping(path = "/remove", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
             produces = "application/json")
     @ResponseBody
     public ResponseTransfer RemoveEmployee(@RequestParam("id") int id) {
