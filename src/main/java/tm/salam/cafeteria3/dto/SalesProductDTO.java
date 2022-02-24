@@ -25,7 +25,4 @@ public class SalesProductDTO {
     private int amount;
     private String imagePath;
     private LocalDateTime created;
-    private Product product;
-    private Employee employee;
-    private User user;
 }

@@ -1,5 +1,5 @@
 INSERT INTO users(id,username,password,email,status)
-VALUES (1,'admin','admin','admin@admin.com','ACTIVE');
+VALUES (1,'admin','$2a$10$TjK0cPTQKtrZsWhT0sIMSu7GLQLeLeRZ5BaJMG4.argsd/S.7kIDW','admin@admin.com','ACTIVE');
 
 ALTER SEQUENCE users_id_seq RESTART WITH 2;
 

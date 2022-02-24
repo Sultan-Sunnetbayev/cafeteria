@@ -9,6 +9,7 @@ import tm.salam.cafeteria3.dto.ProductDTO;
 import tm.salam.cafeteria3.models.Employee;
 import tm.salam.cafeteria3.service.BucketService;
 import tm.salam.cafeteria3.service.EmployeeService;
+import tm.salam.cafeteria3.service.SalesProductService;
 import tm.salam.cafeteria3.service.SellProductService;
 
 import java.util.HashMap;
@@ -19,79 +20,75 @@ import java.util.Map;
 @RequestMapping("/api/v1/sellProduct")
 public class SellProductController {
 
-    private final BucketService bucketService;
-    private final EmployeeService employeeService;
     private final SellProductService sellProductService;
 
     @Autowired
-    public SellProductController(BucketService bucketService,
-                                 EmployeeService employeeService,
-                                 SellProductService sellProductService) {
-        this.bucketService = bucketService;
-        this.employeeService = employeeService;
+    public SellProductController(SellProductService sellProductService) {
         this.sellProductService = sellProductService;
     }
 
     @PostMapping(path = "/getProductByCode",
             consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
             produces = "application/json")
-    public ResponseEntity getProductByCode(@RequestParam("code")String code){
+    public ResponseEntity getProductByCode(@RequestParam("code") String code) {
 
-        Map<Object,Object>response=new HashMap<>();
+        Map<Object, Object> response = new HashMap<>();
 
-        if(bucketService.AddProduct(code)){
+        if (sellProductService.AddSellProductToBucket(code)) {
 
-            response.put("all product ",bucketService.getAllProduct());
+            response.put("all product ", sellProductService.getAllSellProducts());
 
-        }else{
-                response.put("error with products",false);
-            }
+        } else {
+            response.put("this products don't found in database or amount product less than amount product in database", false);
+        }
         return ResponseEntity.ok(response);
     }
 
     @GetMapping(produces = "application/json")
-    public ResponseEntity ShowSumSalesProducts(){
+    public ResponseEntity ShowSumSalesProducts() {
 
-        List<ProductDTO>productDTOS=bucketService.getAllProduct();
-        Double sum =0.0;
+        List<ProductDTO> productDTOS = sellProductService.getAllSellProducts();
+        Double sum = 0.0;
 
-        for(ProductDTO productDTO:productDTOS){
-            sum+=productDTO.getSum();
+        for (ProductDTO productDTO : productDTOS) {
+            sum += productDTO.getSum();
         }
 
         return ResponseEntity.ok(sum);
     }
 
-    @PostMapping(path = "/getEmployeeByCode",consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
+    @PostMapping(path = "/getEmployeeByCode", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
             produces = "application/json")
-    public EmployeeDTO getEmployeeByCode(@RequestParam("code")String code){
+    public ResponseEntity getEmployeeByCode(@RequestParam("code") String code) {
 
+        EmployeeDTO employeeDTO = sellProductService.getClientByCode(code);
+        Map<Object, Object> response = new HashMap<>();
 
-        Employee employee=employeeService.getEmployeeByCode(code);
-        bucketService.setEmployeeInBucket(employee);
+        if (employeeDTO == null) {
 
-        return EmployeeDTO.builder()
-                .imagePath(employee.getImagePath())
-                .name(employee.getName())
-                .surname(employee.getSurname())
-                .grade(employee.getGrade())
-                .build();
+            response.put("this employee don't found in database", false);
+        } else {
 
+            response.put("this employee successful founded", true);
+            response.put("employee ", employeeDTO);
+        }
+
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping(produces = "application/json")
-    public ResponseEntity SellProduct(){
+    public ResponseEntity SellProduct() {
 
-        Map<Object,Object>response=new HashMap<>();
+        Map<Object, Object> response = new HashMap<>();
 
-        if(sellProductService.SaveSalesProduct()){
+        if (sellProductService.SaveSellProducts()) {
 
-            response.put("all sales products succesfull saved",true);
-        }else{
-            response.put("products don't saved",false);
+            response.put("all sales products succesfull saved", true);
+        } else {
+
+            response.put("products don't saved", false);
         }
 
-        bucketService.RemoveBucket();
         return ResponseEntity.ok(response);
     }
 

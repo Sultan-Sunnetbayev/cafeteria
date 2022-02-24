@@ -18,10 +18,10 @@ public class ReturnProductDTO {
 
     private int id;
     private String productName;
-    private Double  sellPrice;
+    private Double sellPrice;
     private int amount;
     private LocalDateTime created;
-    private Product product;
+    private String imagePath;
     private String employeeName;
 
 }

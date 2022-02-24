@@ -8,7 +8,9 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Data
 @NoArgsConstructor
@@ -23,20 +25,18 @@ public class ReturnProduct {
     private int id;
     @Column(name = "product_name")
     private String productName;
+    @Column(name = "image_path")
+    private String imagePath;
     @Column(name = "price")
     private Double sellPrice;
-//    private Double sum;
     private int amount;
     @CreationTimestamp
-    private LocalDateTime created;
-    @OneToOne(optional = true,cascade = CascadeType.ALL)
+    private LocalDate created;
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "product_id")
     private Product product;
-    @OneToOne(optional =true,cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "employee_id")
     private Employee employee;
-    @OneToOne(optional =true,cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id")
-    private User user;
 
 }

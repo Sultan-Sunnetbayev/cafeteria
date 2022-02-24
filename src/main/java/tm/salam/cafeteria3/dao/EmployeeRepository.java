@@ -7,10 +7,19 @@ import tm.salam.cafeteria3.models.Employee;
 import java.util.List;
 
 @Repository
-public interface EmployeeRepository extends JpaRepository<Employee,Integer> {
+public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
 
     Employee findFirstByName(String name);
+
     Employee findFirstBySurname(String surname);
-    Employee findById(int id);
+
+    Employee findFirstByCode(String code);
+
+    Employee findEmployeeById(int id);
+
     Employee findByCode(String code);
+
+    Employee findEmployeeByNameAndSurname(String name, String surname);
+
+    void deleteEmployeeById(int id);
 }

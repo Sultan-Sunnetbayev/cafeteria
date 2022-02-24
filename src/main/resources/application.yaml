@@ -1,20 +1,20 @@
 spring:
-    main:
-        allow-circular-references: true
-    jpa:
-        hibernate:
-            ddl-auto: validate
-        show-sql: true
-    datasource:
-        url: jdbc:postgresql://localhost:5432/cafeteria
-        username: postgres
-        password: root
-    flyway:
-        baseline-on-migrate: true
-    security:
-        oauth2:
-            resourceserver:
-                jwt:
-                    issuer-uri:
+  main:
+    allow-circular-references: true
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/cafeteria
+    username: postgres
+    password: root
+  flyway:
+    baseline-on-migrate: true
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri:
 server:
-    port: 8080
+  port: 8080
