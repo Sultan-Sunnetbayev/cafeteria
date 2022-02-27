@@ -72,6 +72,7 @@ public class BucketServiceImpl implements BucketService {
         List<ProductDTO> productDTOList = new ArrayList<>();
         for (Bucket bucket : buckets) {
             productDTOList.add(ProductDTO.builder()
+                    .id(bucket.getId())
                     .imagePath(bucket.getProduct().getImagePath())
                     .name(bucket.getProduct().getName())
                     .amount(bucket.getAmount())

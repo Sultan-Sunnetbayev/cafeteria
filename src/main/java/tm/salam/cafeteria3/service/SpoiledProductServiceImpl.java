@@ -34,6 +34,7 @@ public class SpoiledProductServiceImpl implements SpoiledProductService {
 
         for (SpoiledProduct spoiledProduct : spoiledProducts) {
             productDTOS.add(ProductDTO.builder()
+                    .id(spoiledProduct.getId())
                     .name(spoiledProduct.getProductName())
                     .amount(spoiledProduct.getAmount())
                     .build());

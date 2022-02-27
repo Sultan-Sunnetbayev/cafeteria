@@ -3,10 +3,12 @@ package tm.salam.cafeteria3.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import sun.misc.IOUtils;
 import tm.salam.cafeteria3.Helper.FileUploadUtil;
 import tm.salam.cafeteria3.Helper.ResponseTransfer;
 import tm.salam.cafeteria3.dto.EmployeeDTO;
@@ -15,6 +17,8 @@ import tm.salam.cafeteria3.generator.QRCodeGenerator;
 import tm.salam.cafeteria3.models.Employee;
 import tm.salam.cafeteria3.service.EmployeeService;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -95,9 +99,11 @@ public class EmployeeController {
     @ResponseBody
     public ResponseTransfer UpdateProfileEmployee(@ModelAttribute EmployeeDTO employeeDTO,
                                                   @RequestParam("oldPassword") String password,
-                                                  @RequestParam("QRCode") MultipartFile multipartFile) throws IOException {
+                                                  @RequestParam("QRCode") String path) throws IOException {
 
-        Employee employee = employeeService.getEmployeeByCode(qrCodeGenerator.decodeQRCode(multipartFile));
+        File file = new File("src/main/resources/QRCode_employees/" + path + ".png");
+
+        Employee employee = employeeService.getEmployeeByCode(qrCodeGenerator.decodeQRCode(file));
 
         if (employee == null) {
 

@@ -14,6 +14,7 @@ import tm.salam.cafeteria3.service.EmployeeService;
 import tm.salam.cafeteria3.service.ProductService;
 import tm.salam.cafeteria3.service.ReturnProductService;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -79,9 +80,11 @@ public class ReturnedProductController {
     }
 
     @PostMapping(path = "/getEmployee", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}, produces = "application/json")
-    public ResponseEntity getEmployeeByCode(@RequestParam("QRCode") MultipartFile multipartFile) throws IOException {
+    public ResponseEntity getEmployeeByCode(@RequestParam("QRCode") String path) throws IOException {
 
-        String employeeCode = qrCodeGenerator.decodeQRCode(multipartFile);
+        File file = new File("src/main/resources/QRCode_employees/" + path + ".png");
+
+        String employeeCode = qrCodeGenerator.decodeQRCode(file);
         Employee employee = employeeService.getEmployeeByCode(employeeCode);
         Map<Object, Object> response = new HashMap<>();
 

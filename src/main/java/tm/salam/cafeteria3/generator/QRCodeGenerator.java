@@ -42,28 +42,19 @@ public class QRCodeGenerator {
         return text + ".png";
     }
 
-    public String decodeQRCode(MultipartFile multipartFile) throws IOException {
+    public String decodeQRCode(File file) throws IOException {
 
-        File convFile = new File(StringUtils.cleanPath(multipartFile.getOriginalFilename()));
-        FileOutputStream fos = new FileOutputStream(convFile);
-        fos.write(multipartFile.getBytes());
-        fos.close();
-
-
-        BufferedImage bufferedImage = ImageIO.read(convFile);
+        BufferedImage bufferedImage = ImageIO.read(file);
         LuminanceSource source = new BufferedImageLuminanceSource(bufferedImage);
         BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
 
         try {
 
             Result result = new MultiFormatReader().decode(bitmap);
-            convFile.delete();
 
             return result.getText();
 
         } catch (NotFoundException e) {
-
-            convFile.delete();
 
             return "-1";
         }

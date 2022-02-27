@@ -43,6 +43,7 @@ public class SalesProductServiceImpl implements SalesProductService {
 
             productDTOS.add(
                     ProductDTO.builder()
+                            .id(salesProduct.getId())
                             .name(salesProduct.getProductName())
                             .imagePath(salesProduct.getImagePath())
                             .amount(salesProduct.getAmount())
@@ -98,6 +99,7 @@ public class SalesProductServiceImpl implements SalesProductService {
         for (SalesProduct salesProduct : salesProducts) {
 
             productDTOS.add(ProductDTO.builder()
+                    .id(salesProduct.getId())
                     .name(salesProduct.getProductName())
                     .imagePath(salesProduct.getImagePath())
                     .amount(salesProduct.getAmount())

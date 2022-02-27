@@ -41,6 +41,7 @@ public class ReturnProductServiceImpl implements ReturnProductService {
         for (ReturnProduct returnProduct : returnProducts) {
             returnProductDTOS.add(
                     ReturnProductDTO.builder()
+                            .id(returnProduct.getId())
                             .productName(returnProduct.getProductName())
                             .imagePath(returnProduct.getImagePath())
                             .sellPrice(returnProduct.getSellPrice())

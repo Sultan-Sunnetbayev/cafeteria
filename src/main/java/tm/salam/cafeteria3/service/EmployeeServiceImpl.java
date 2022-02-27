@@ -53,6 +53,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     private EmployeeDTO toDTO(Employee employee) {
 
         return EmployeeDTO.builder()
+                .id(employee.getId())
                 .imagePath(employee.getImagePath())
                 .name(employee.getName())
                 .surname(employee.getSurname())
@@ -171,6 +172,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
 
         return EmployeeDTO.builder()
+                .id(employee.getId())
                 .imagePath(employee.getImagePath())
                 .name(employee.getName())
                 .surname(employee.getSurname())
@@ -207,6 +209,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         } else {
 
             return EmployeeDTO.builder()
+                    .id(employee.getId())
                     .imagePath(employee.getImagePath())
                     .name(employee.getName())
                     .surname(employee.getSurname())
@@ -224,6 +227,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         for (SalesProduct salesProduct : salesProducts) {
             productDTOS.add(
                     ProductDTO.builder()
+                            .id(salesProduct.getId())
                             .imagePath(salesProduct.getImagePath())
                             .name(salesProduct.getProductName())
                             .sellPrice(salesProduct.getSellPrice())
@@ -245,6 +249,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
             productDTOS.add(
                     ProductDTO.builder()
+                            .id(returnProduct.getId())
                             .imagePath(returnProduct.getImagePath())
                             .name(returnProduct.getProductName())
                             .amount(returnProduct.getAmount())

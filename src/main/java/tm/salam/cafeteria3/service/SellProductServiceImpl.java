@@ -65,6 +65,7 @@ public class SellProductServiceImpl implements SellProductService {
         bucketService.setEmployeeInBucket(employee);
 
         return EmployeeDTO.builder()
+                .id(employee.getId())
                 .name(employee.getName())
                 .surname(employee.getSurname())
                 .imagePath(employee.getImagePath())

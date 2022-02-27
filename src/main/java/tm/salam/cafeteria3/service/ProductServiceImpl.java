@@ -106,6 +106,7 @@ public class ProductServiceImpl implements ProductService {
     private ProductDTO toDTO(Product product) {
 
         return ProductDTO.builder()
+                .id(product.getId())
                 .imagePath(product.getImagePath())
                 .name(product.getName())
                 .amount(product.getAmount())
@@ -171,6 +172,7 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.getProductByCode(code);
 
         return ProductDTO.builder()
+                .id(product.getId())
                 .imagePath(product.getImagePath())
                 .name(product.getName())
                 .amount(product.getAmount())

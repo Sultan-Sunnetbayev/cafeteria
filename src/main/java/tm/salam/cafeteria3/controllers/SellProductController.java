@@ -10,6 +10,7 @@ import tm.salam.cafeteria3.dto.ProductDTO;
 import tm.salam.cafeteria3.generator.QRCodeGenerator;
 import tm.salam.cafeteria3.service.SellProductService;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -61,9 +62,11 @@ public class SellProductController {
 
     @PostMapping(path = "/getEmployeeByCode", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
             produces = "application/json")
-    public ResponseEntity getEmployeeByCode(@RequestParam("QRCode") MultipartFile multipartFile) throws IOException {
+    public ResponseEntity getEmployeeByCode(@RequestParam("QRCode") String path) throws IOException {
 
-        EmployeeDTO employeeDTO = sellProductService.getClientByCode(qrCodeGenerator.decodeQRCode(multipartFile));
+        File file = new File("src/main/resources/QRCode_employees/" + path + ".png");
+
+        EmployeeDTO employeeDTO = sellProductService.getClientByCode(qrCodeGenerator.decodeQRCode(file));
         Map<Object, Object> response = new HashMap<>();
 
         if (employeeDTO == null) {
